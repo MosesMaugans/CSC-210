@@ -1,7 +1,8 @@
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Scanner;
-import java.util.TreeMap;
 import java.util.TreeSet;
 
 import bool_exp.ASTNode;
@@ -23,57 +24,62 @@ public class PA4BoolSat {
         } catch (Exception e) {
             System.out.println("INVALID FILE NAME.");
         }
+
         ASTNode root = BoolSatParser.parse(expr);
-        TreeSet<String> children = new TreeSet<String>();
+
         // System.out.println(root.toDotString());
-        treeTraversal(root, children);
-        TreeMap<String, Boolean> guesses = new TreeMap<String, Boolean>();
-        Boolean[] options = { false, true };
-        ArrayList<String> childset = new ArrayList<String>(children);
-        bools(childset, guesses, options, root);
+
+        boolean[] bool = { false, true };
+        TreeSet<String> termset = new TreeSet<String>();
+        ArrayList<HashMap<String, Boolean>> truthTable = new ArrayList<HashMap<String, Boolean>>();
+
+        treeTraversal(root, termset);
+        ArrayList<String> terms = new ArrayList<String>(termset);
+        getTruthTable(truthTable, new HashMap<String, Boolean>(), terms, bool);
+        printTruthTable(truthTable);
     }
 
-    public static void treeTraversal(ASTNode node, TreeSet<String> children) {
+    public static void treeTraversal(ASTNode node, TreeSet<String> terms) {
         if (node != null) {
-            treeTraversal(node.child1, children);
-            treeTraversal(node.child2, children);
-            if (!node.isNand()) {
-                children.add(node.getId());
+            treeTraversal(node.child1, terms);
+            treeTraversal(node.child2, terms);
+            if (node.isId()) {
+                terms.add(node.getId());
             }
         }
     }
 
-    public static void bools(ArrayList<String> childset,
-            TreeMap<String, Boolean> guesses, Boolean[] options, ASTNode node) {
-        if (childset.size() == 0) {
-            printGuesses(guesses);
-            // System.out.println(eval(node, guesses));
+    public static void getTruthTable(
+            ArrayList<HashMap<String, Boolean>> truthTable,
+            HashMap<String, Boolean> guesses, ArrayList<String> terms,
+            boolean[] bool) {
+        if (terms.size() == 0) {
+            HashMap<String, Boolean> dict = new HashMap<String, Boolean>();
+            for (String key : guesses.keySet()) {
+                boolean value = guesses.get(key);
+                dict.put(key, value);
+            }
+            truthTable.add(dict);
         } else {
             for (int i = 0; i <= 1; i++) {
-                guesses.put(childset.get(childset.size() - 1), options[i]);
-                String id = childset.remove(childset.size() - 1);
-                bools(childset, guesses, options, node);
-                childset.add(id);
+                String term = terms.remove(0);
+                guesses.put(term, bool[i]);
+                getTruthTable(truthTable, guesses, terms, bool);
+                terms.add(0, term);
             }
         }
     }
 
-    public static void printGuesses(TreeMap<String, Boolean> guesses) {
-        for (String id : guesses.keySet()) {
-            System.out.print(id + ": " + guesses.get(id) + ", ");
+    public static void printTruthTable(
+            ArrayList<HashMap<String, Boolean>> truthTable) {
+        for (HashMap<String, Boolean> dict : truthTable) {
+            ArrayList<String> sortedKeys = new ArrayList<String>(dict.keySet());
+            Collections.sort(sortedKeys);
+            for (String key : sortedKeys) {
+                boolean value = dict.get(key);
+                System.out.print(key + ": " + value + ", ");
+            }
+            System.out.println();
         }
-    }
-
-    public static boolean eval(ASTNode node, TreeMap<String, Boolean> guesses) {
-        if (!node.child1.isNand() && !node.child2.isNand()) {
-            boolean child1 = guesses.get(node.child1.getId());
-            boolean child2 = guesses.get(node.child2.getId());
-            boolean val = !(child1 && child2);
-            return val;
-        } else {
-            eval(node.child1, guesses);
-            eval(node.child2, guesses);
-        }
-        return false;
     }
 }
