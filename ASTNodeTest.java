@@ -49,7 +49,7 @@ public class ASTNodeTest {
         Assert.assertFalse(root.child1.isNand());
         Assert.assertFalse(root.child2.isNand());
     }
-    
+
     @Test
     public void testCorrectId() {
         ASTNode root = BoolSatParser.parse("a NAND b");
