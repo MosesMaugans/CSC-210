@@ -36,7 +36,8 @@ public class PA4BoolSat {
         treeTraversal(root, termset);
         ArrayList<String> terms = new ArrayList<String>(termset);
         getTruthTable(truthTable, new HashMap<String, Boolean>(), terms, bool);
-        printTruthTable(truthTable);
+        String table = printTruthTable(expr, truthTable, root);
+        System.out.print(table);
     }
 
     public static void treeTraversal(ASTNode node, TreeSet<String> terms) {
@@ -70,16 +71,36 @@ public class PA4BoolSat {
         }
     }
 
-    public static void printTruthTable(
-            ArrayList<HashMap<String, Boolean>> truthTable) {
+    public static String printTruthTable(String expr,
+            ArrayList<HashMap<String, Boolean>> truthTable, ASTNode node) {
+        String sat = "UNSAT";
+        String results = "";
         for (HashMap<String, Boolean> dict : truthTable) {
             ArrayList<String> sortedKeys = new ArrayList<String>(dict.keySet());
             Collections.sort(sortedKeys);
             for (String key : sortedKeys) {
                 boolean value = dict.get(key);
-                System.out.print(key + ": " + value + ", ");
+                results += key + ": " + value + ", ";
             }
-            System.out.println();
+            boolean boolAns = eval(dict, node);
+            results += boolAns + "\n";
+            if (boolAns) {
+                sat = "SAT";
+            }
+        }
+        results = "input: " + expr + "\n" + sat + "\n" + results;
+        return results;
+    }
+
+    public static boolean eval(HashMap<String, Boolean> values, ASTNode node) {
+        if (node.child1 == null && node.child2 == null) {
+            return values.get(node.getId());
+        } else {
+            ASTNode left = node.child1;
+            ASTNode right = node.child2;
+            boolean leftTerm = eval(values, left);
+            boolean rightTerm = eval(values, right);
+            return !(leftTerm && rightTerm);
         }
     }
 }
