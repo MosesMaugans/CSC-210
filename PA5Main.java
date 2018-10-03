@@ -1,8 +1,6 @@
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Scanner;
 
 public class PA5Main {
@@ -27,6 +25,7 @@ public class PA5Main {
             System.out.println(minTrip.toString(graph));
         } else if (command.equals("HEURISTIC")) {
             getTrip(graph, currTrip);
+            System.out.println(currTrip.toString(graph));
         }
     }
 
@@ -72,12 +71,6 @@ public class PA5Main {
     }
 
     public static void getTrip(DGraph graph, Trip currTrip) {
-        for(int i = 2; i <= graph.getNumNodes(); i++) {
-            List<Integer> cities = new ArrayList<Integer>(graph.getNeighbors(i));
-            int min = Integer.MAX_VALUE;
-            for(int j = 0; j < cities.size(); j++) {
-                if
-            }
-        }
+
     }
 }
