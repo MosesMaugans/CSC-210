@@ -1,4 +1,3 @@
-
 public class Mammal extends Animal {
     private static String type;
     private static int x;
@@ -36,7 +35,6 @@ public class Mammal extends Animal {
     }
 
     public void move() {
-        screen.get(y).get(x).remove(this);
         if (direction.equals("right")) {
             if (moveVertically) {
                 int moveDown = y + 1;
@@ -66,7 +64,7 @@ public class Mammal extends Animal {
                 x = moveLeft;
             }
         }
-        screen.get(y).get(x).add(0, this);
+        tempScreen.get(y).get(x).add(0, this);
         moveVertically = !moveVertically;
         age += 1;
         lastEaten += 1;

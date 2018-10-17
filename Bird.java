@@ -6,6 +6,7 @@ public class Bird extends Animal {
     private static int lastEaten;
     private static int age;
     private static int distance;
+    private static int distanceTraveled;
     private static int direction;
 
     public Bird(String type, int x, int y, String sex, int num) {
@@ -16,6 +17,7 @@ public class Bird extends Animal {
         lastEaten = 0;
         age = 0;
         distance = num;
+        distanceTraveled = 0;
         direction = 1;
     }
 
@@ -28,23 +30,26 @@ public class Bird extends Animal {
     }
 
     public void move() {
-        screen.get(y).get(x).remove(this);
         if (direction == 1) {
-            y += distance;
-            direction += 1;
+            y += 1;
         } else if (direction == 2) {
-            x += distance;
-            direction += 1;
+            x += 1;
         } else if (direction == 3) {
-            y -= distance;
-            direction += 1;
+            y -= 1;
         } else if (direction == 4) {
-            x -= distance;
-            direction = 1;
+            x -= 1;
         }
-        screen.get(y).get(x).add(0, this);
+        tempScreen.get(y).get(x).add(0, this);
+        distanceTraveled += 1;
         lastEaten += 1;
         age += 1;
+        if (distanceTraveled == distance) {
+            if (direction == 4) {
+                direction = 1;
+            } else {
+                direction += 1;
+            }
+        }
     }
 
     public String getType() {

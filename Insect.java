@@ -7,17 +7,20 @@ public class Insect extends Animal {
     private static int lastEaten;
     private static int age;
     private static int distance;
+    private static int distanceTraveled;
 
     public Insect(String type, int x, int y, String sex, boolean val) {
         this.type = type;
         this.x = x;
         this.y = y;
         this.sex = sex;
+        distance = 1;
+        distanceTraveled = 0;
         direction = 1;
         lastEaten = 0;
         age = 0;
     }
-    
+
 
     public void eat(Animal other) {
         if (birds.contains(other.getType())) {
@@ -25,6 +28,35 @@ public class Insect extends Animal {
         } else if (mammals.contains(other.getType())) {
             lastEaten = 0;
         }
+    }
+
+    public void move() {
+        if (direction == 1) {
+            x -= 1;
+        } else if (direction == 2) {
+            y -= 1;
+        } else if (direction == 3) {
+            x += 1;
+        } else if (direction == 4) {
+            y += 1;
+        }
+        int[] coords = checkBounds(x, y);
+        x = coords[0];
+        y = coords[1];
+        tempScreen.get(y).get(x).add(0, this);
+        distanceTraveled += 1;
+        lastEaten += 1;
+        age += 1;
+        if (distanceTraveled == distance) {
+            if (direction == 4) {
+                direction = 1;
+                distance += 1;
+            } else {
+                direction += 1;
+                distanceTraveled = 0;
+            }
+        }
+        System.out.println(distance);
     }
 
     public String getType() {

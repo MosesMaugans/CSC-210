@@ -9,7 +9,10 @@ public class PA6Main {
     public static void main(String[] args) throws FileNotFoundException {
         Scanner readfile = new Scanner(
                 new File(args[0]));
-        makeScreen(readfile);
+        int[] dimensions = parseScreenSize(readfile);
+        int rowLength = dimensions[0];
+        int colLength = dimensions[1];
+        screen = makeScreen(rowLength, colLength);
         // System.out.println(screen.get(1).get(1).get(1));
         while (readfile.hasNextLine()) {
             String line = readfile.nextLine();
@@ -20,6 +23,7 @@ public class PA6Main {
                 printScreen();
             } else if (line.contains("MOVE")) {
                 System.out.println("> MOVE\n");
+                tempScreen = makeScreen(rowLength, colLength);
                 moveScreen();
             } else if (line.contains("EAT")) {
                 System.out.println("> EAT\n");
@@ -40,11 +44,17 @@ public class PA6Main {
     }
 
     public static void moveScreen() {
-        for (Animal animal : animals) {
-            animal.move();
+        for (List<List<Animal>> row : screen) {
+            for (List<Animal> col : row) {
+                for (Animal a : col) {
+                    a.move();
+                }
+            }
         }
+        screen = tempScreen;
     }
 
+    protected static List<List<List<Animal>>> tempScreen;
     protected static List<List<List<Animal>>> screen;
     protected static List<Animal> animals = new ArrayList<Animal>();
     protected static String mammals = "erlcgz";
@@ -54,7 +64,9 @@ public class PA6Main {
     public static void create(String obj) {
         Animal newAnimal = new Animal();
         String[] input = obj.split(" ");
+        System.out.println(input[0]);
         String[] coords = input[1].split(",");
+
         int x = Integer.parseInt(coords[0].substring(1));
         int y = Integer.parseInt(coords[1].substring(0, 1));
         String type = input[2].substring(0, 1);
@@ -91,19 +103,26 @@ public class PA6Main {
         return m;
     }
 
-    public static void makeScreen(Scanner readfile) {
+    public static int[] parseScreenSize(Scanner readfile) {
         String[] row = readfile.nextLine().split(" ");
         String[] col = readfile.nextLine().split(" ");
         int rowLength = Integer.parseInt(row[1]);
         int colLength = Integer.parseInt(col[1]);
-        screen = new ArrayList<List<List<Animal>>>();
+        int[] dimensions = { rowLength, colLength };
+        return dimensions;
+    }
+
+    public static List<List<List<Animal>>> makeScreen(int rowLength,
+            int colLength) {
+        List<List<List<Animal>>> newScreen = new ArrayList<List<List<Animal>>>();
         for (int r = 0; r < rowLength; r++) {
-            screen.add(new ArrayList<List<Animal>>(colLength));
-            for(int c = 0; c < colLength; c++) {
-                screen.get(r).add(new ArrayList<Animal>());
-                screen.get(r).get(c).add(new Animal());
+            newScreen.add(new ArrayList<List<Animal>>(colLength));
+            for (int c = 0; c < colLength; c++) {
+                newScreen.get(r).add(new ArrayList<Animal>());
+                newScreen.get(r).get(c).add(new Animal());
             }
         }
+        return newScreen;
     }
 
     private static void printScreen() {
@@ -116,5 +135,3 @@ public class PA6Main {
         System.out.println();
     }
 }
-
-
