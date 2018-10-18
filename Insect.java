@@ -3,6 +3,7 @@ public class Insect extends Animal {
     private static int x;
     private static int y;
     private static int direction;
+    private static boolean val;
     private static String sex;
     private static int lastEaten;
     private static int age;
@@ -13,6 +14,7 @@ public class Insect extends Animal {
         this.type = type;
         this.x = x;
         this.y = y;
+        this.val = val;
         this.sex = sex;
         distance = 1;
         distanceTraveled = 0;
@@ -32,13 +34,21 @@ public class Insect extends Animal {
 
     public void move() {
         if (direction == 1) {
-            x -= 1;
+                x -= 1;
         } else if (direction == 2) {
-            y -= 1;
+            if (val) {
+                y -= 1;
+            } else {
+                y += 1;
+            }
         } else if (direction == 3) {
-            x += 1;
+                x += 1;
         } else if (direction == 4) {
-            y += 1;
+            if (val) {
+                y += 1;
+            } else {
+                y -= 1;
+            }
         }
         int[] coords = checkBounds(x, y);
         x = coords[0];
@@ -50,13 +60,12 @@ public class Insect extends Animal {
         if (distanceTraveled == distance) {
             if (direction == 4) {
                 direction = 1;
-                distance += 1;
+
             } else {
                 direction += 1;
                 distanceTraveled = 0;
             }
         }
-        System.out.println(distance);
     }
 
     public String getType() {

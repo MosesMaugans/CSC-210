@@ -64,7 +64,6 @@ public class PA6Main {
     public static void create(String obj) {
         Animal newAnimal = new Animal();
         String[] input = obj.split(" ");
-        System.out.println(input[0]);
         String[] coords = input[1].split(",");
 
         int x = Integer.parseInt(coords[0].substring(1));
