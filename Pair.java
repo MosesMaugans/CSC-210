@@ -1,18 +1,21 @@
+public class Pair<K, V> {
+    private K key;
+    private V value;
 
-public class Pair<String, Integer> {
-    private String key;
-    private Integer value;
-
-    public Pair(String key, Integer value) {
+    public Pair(K key, V value) {
         this.key = key;
         this.value = value;
     }
 
-    public String getKey() {
+    public K getKey() {
         return key;
     }
 
-    public Integer getValue() {
+    public V getValue() {
         return value;
+    }
+
+    public void changeValue(V newValue) {
+        value = newValue;
     }
 }
