@@ -1,3 +1,4 @@
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -7,8 +8,7 @@ import java.util.Scanner;
 public class PA6Main {
 
     public static void main(String[] args) throws FileNotFoundException {
-        Scanner readfile = new Scanner(
-                new File(args[0]));
+        Scanner readfile = new Scanner(new File(args[0]));
         int[] dimensions = parseScreenSize(readfile);
         int rowLength = dimensions[0];
         int colLength = dimensions[1];
@@ -25,19 +25,26 @@ public class PA6Main {
                 System.out.println("> MOVE\n");
                 tempScreen = makeScreen(rowLength, colLength);
                 moveScreen();
-            } else if (line.contains("EAT")) {
-                System.out.println("> EAT\n");
-                parseEat();
-            }
+            } 
         }
 
+    }
+
+    public static void parseReproduce() {
+        for (List<List<Animal>> row : screen) {
+            for (List<Animal> col : row) {
+                if (col.size() > 1) {
+                    Animal.reproduce(col.get(0), col.get(1));
+                }
+            }
+        }
     }
 
     public static void parseEat() {
         for (List<List<Animal>> row : screen) {
             for (List<Animal> col : row) {
                 if (col.size() > 1) {
-                    col.get(1).eat(col.get(0));
+                    col.get(0).eat(col.get(1));
                 }
             }
         }
@@ -45,21 +52,21 @@ public class PA6Main {
 
     public static void moveScreen() {
         for (List<List<Animal>> row : screen) {
-            for (List<Animal> col : row) {
-                for (Animal a : col) {
-                    a.move();
+            for (List<Animal> tile : row) {
+                for (Animal animal : tile) {
+                    animal.move();
                 }
             }
         }
         screen = tempScreen;
     }
 
-    protected static List<List<List<Animal>>> tempScreen;
-    protected static List<List<List<Animal>>> screen;
-    protected static List<Animal> animals = new ArrayList<Animal>();
-    protected static String mammals = "erlcgz";
-    protected static String birds = "towds";
-    protected static String insects = "mbfha";
+    public static List<List<List<Animal>>> tempScreen;
+    public static List<List<List<Animal>>> screen;
+    public static List<Animal> animals = new ArrayList<Animal>();
+    public static String mammals = "erlcgz";
+    public static String birds = "towds";
+    public static String insects = "mbfha";
 
     public static void create(String obj) {
         Animal newAnimal = new Animal();
@@ -77,28 +84,29 @@ public class PA6Main {
         } else if (insects.contains(type)) {
             newAnimal = createInsect(type, x, y, sex, input);
         }
-        screen.get(y).get(x).add(0, newAnimal);
+
+        screen.get(y).get(x).add(newAnimal);
         animals.add(newAnimal);
     }
 
     public static Animal createInsect(String type, int x, int y, String sex,
             String[] params) {
         boolean val = Boolean.parseBoolean(params[4]);
-        Animal i = new Insect(type, x, y, sex, val);
+        Insect i = new Insect(type, x, y, sex, val);
         return i;
     }
 
     public static Animal createBird(String type, int x, int y, String sex,
             String[] params) {
         int num = Integer.parseInt(params[4]);
-        Animal b = new Bird(type, x, y, sex, num);
+        Bird b = new Bird(type, x, y, sex, num);
         return b;
     }
 
     public static Animal createMammal(String type, int x, int y, String sex,
             String[] params) {
         String direction = params[4];
-        Animal m = new Mammal(type, x, y, sex, direction);
+        Mammal m = new Mammal(type, x, y, sex, direction);
         return m;
     }
 
@@ -118,7 +126,6 @@ public class PA6Main {
             newScreen.add(new ArrayList<List<Animal>>(colLength));
             for (int c = 0; c < colLength; c++) {
                 newScreen.get(r).add(new ArrayList<Animal>());
-                newScreen.get(r).get(c).add(new Animal());
             }
         }
         return newScreen;
@@ -127,7 +134,12 @@ public class PA6Main {
     private static void printScreen() {
         for (List<List<Animal>> row : screen) {
             for (List<Animal> animal : row) {
-                System.out.print(animal.get(0).getType());
+                if (animal.size() == 0) {
+                    System.out.print(".");
+                } else {
+                    System.out.print(animal.get(0));
+                }
+
             }
             System.out.println();
         }

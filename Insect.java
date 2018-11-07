@@ -1,26 +1,15 @@
 public class Insect extends Animal {
-    private static String type;
-    private static int x;
-    private static int y;
-    private static int direction;
-    private static boolean val;
-    private static String sex;
-    private static int lastEaten;
-    private static int age;
-    private static int distance;
-    private static int distanceTraveled;
+    private int direction;
+    private boolean val;
+    private int distance;
+    private int distanceTraveled;
 
     public Insect(String type, int x, int y, String sex, boolean val) {
-        this.type = type;
-        this.x = x;
-        this.y = y;
+        super(type, x, y, sex);
         this.val = val;
-        this.sex = sex;
         distance = 1;
         distanceTraveled = 0;
         direction = 1;
-        lastEaten = 0;
-        age = 0;
     }
 
 
@@ -66,6 +55,10 @@ public class Insect extends Animal {
                 distanceTraveled = 0;
             }
         }
+    }
+
+    public String toString() {
+        return type;
     }
 
     public String getType() {
